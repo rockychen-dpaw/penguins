@@ -13,6 +13,7 @@ build/
 reports/
 src/
 logs/
+build_image.sh
 
 # Database/fixture dumps
 *.pgdump

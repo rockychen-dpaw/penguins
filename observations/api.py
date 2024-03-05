@@ -1,5 +1,5 @@
 import arrow
-from django.conf.urls import url
+from django.urls import path
 from django.http import HttpResponse
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -109,8 +109,8 @@ class VideoDetailResource(LoginRequiredMixin, DetailUpdateResourceView):
 
 
 API_URLS = [
-    url(r'^observation/$', PenguinObservationListResource.as_view(), name='penguinobservation_list_resource'),
-    url(r'^observation/(?P<pk>\d+)/$', PenguinObservationDetailResource.as_view(), name='penguinobservation_detail_resource'),
-    url(r'^video/$', VideoListResource.as_view(), name='video_list_resource'),
-    url(r'^video/(?P<pk>\d+)/$', VideoDetailResource.as_view(), name='video_detail_resource'),
+    path('observation/', PenguinObservationListResource.as_view(), name='penguinobservation_list_resource'),
+    path('observation/<int:pk>/', PenguinObservationDetailResource.as_view(), name='penguinobservation_detail_resource'),
+    path('video/', VideoListResource.as_view(), name='video_list_resource'),
+    path('video/<int:pk>/', VideoDetailResource.as_view(), name='video_detail_resource'),
 ]

@@ -86,8 +86,8 @@ class Migration(migrations.Migration):
                 ('raining', models.BooleanField(verbose_name='Raining?', default=False, help_text='Was it raining at the time of the observation?')),
                 ('position', models.FloatField(verbose_name='Position in video', null=True, default=0)),
                 ('validated', models.BooleanField(verbose_name='Confirmed', default=True)),
-                ('camera', models.ForeignKey(blank=True, null=True, to='observations.Camera')),
-                ('observer', models.ForeignKey(related_name='observations', to=settings.AUTH_USER_MODEL)),
+                ('camera', models.ForeignKey(blank=True, null=True, to='observations.Camera',on_delete=models.CASCADE)),
+                ('observer', models.ForeignKey(related_name='observations', to=settings.AUTH_USER_MODEL,on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -123,7 +123,7 @@ class Migration(migrations.Migration):
                 ('end_time', models.TimeField(verbose_name='End time', help_text='The end time of the recording (usually 1h after start).')),
                 ('views', models.IntegerField(default=0)),
                 ('mark_complete', models.BooleanField(default=False, help_text='Has this been viewed in its entirety by a reviewer')),
-                ('camera', models.ForeignKey(to='observations.Camera')),
+                ('camera', models.ForeignKey(to='observations.Camera',on_delete=models.CASCADE)),
                 ('completed_by', models.ManyToManyField(verbose_name='Users who have seen this video', related_name='videos_seen', to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -133,26 +133,26 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='penguinvideoobservation',
             name='video',
-            field=models.ForeignKey(to='observations.Video'),
+            field=models.ForeignKey(to='observations.Video',on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='penguinobservation',
             name='site',
-            field=models.ForeignKey(to='observations.Site'),
+            field=models.ForeignKey(to='observations.Site',on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='penguinobservation',
             name='video',
-            field=models.ForeignKey(verbose_name='Video filename', null=True, default=None, to='observations.Video'),
+            field=models.ForeignKey(verbose_name='Video filename', null=True, default=None, to='observations.Video',on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='penguincount',
             name='site',
-            field=models.ForeignKey(to='observations.Site'),
+            field=models.ForeignKey(to='observations.Site',on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='camera',
             name='site',
-            field=models.ForeignKey(blank=True, null=True, to='observations.Site'),
+            field=models.ForeignKey(blank=True, null=True, to='observations.Site',on_delete=models.CASCADE),
         ),
     ]

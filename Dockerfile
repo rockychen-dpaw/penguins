@@ -1,4 +1,4 @@
-FROM python:3.7.17-slim-buster as builder_base_penguins
+FROM python:3.11.8-slim-bullseye as builder_base_penguins
 MAINTAINER asi@dbca.wa.gov.au
 LABEL org.opencontainers.image.source https://github.com/dbca-wa/penguins
 

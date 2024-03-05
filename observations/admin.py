@@ -1,18 +1,18 @@
 from __future__ import unicode_literals
 from datetime import datetime, date
-from daterange_filter.filter import DateRangeFilter
+from penguins.daterangefilter import DateRangeFilter
 from django.conf import settings
-from django.conf.urls import url
+from django.urls import path
 from django.contrib.admin import ModelAdmin
 from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.contrib.admin.utils import unquote, quote
 from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template.response import TemplateResponse
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from functools import update_wrapper
@@ -54,12 +54,12 @@ class DetailAdmin(ModelAdmin):
 
         info = self.model._meta.app_label, self.model._meta.model_name
         urlpatterns = [
-            url(r'^$', wrap(self.changelist_view), name='%s_%s_changelist' % info),
-            url(r'^add/$', wrap(self.add_view), name='%s_%s_add' % info),
-            url(r'^(\d+)/history/$', wrap(self.history_view), name='%s_%s_history' % info),
-            url(r'^(\d+)/delete/$', wrap(self.delete_view), name='%s_%s_delete' % info),
-            url(r'^(\d+)/change/$', wrap(self.change_view), name='%s_%s_change' % info),
-            url(r'^(\d+)/$', wrap(self.detail_view), name='%s_%s_detail' % info),
+            path('', wrap(self.changelist_view), name='%s_%s_changelist' % info),
+            path('add/', wrap(self.add_view), name='%s_%s_add' % info),
+            path('<path:object_id>/history/', wrap(self.history_view), name='%s_%s_history' % info),
+            path('<path:object_id>/delete/', wrap(self.delete_view), name='%s_%s_delete' % info),
+            path('<path:object_id>/change/', wrap(self.change_view), name='%s_%s_change' % info),
+            path('<path:object_id>/', wrap(self.detail_view), name='%s_%s_detail' % info),
         ]
         return urlpatterns
 
@@ -70,10 +70,10 @@ class DetailAdmin(ModelAdmin):
             raise PermissionDenied
 
         if obj is None:
-            raise Http404('{} object with primary key {} does not exist.'.format(force_text(opts.verbose_name), escape(object_id)))
+            raise Http404('{} object with primary key {} does not exist.'.format(force_str(opts.verbose_name), escape(object_id)))
 
         context = {
-            'title': 'Detail {}'.format(force_text(opts.verbose_name)),
+            'title': 'Detail {}'.format(force_str(opts.verbose_name)),
             'object_id': object_id,
             'original': obj,
             'media': self.media,
@@ -112,7 +112,7 @@ class SiteAdmin(DetailAdmin, LeafletGeoAdmin):
         obj = self.get_object(request, unquote(object_id))
 
         if obj is None:
-            raise Http404('{} object with primary key {} does not exist.'.format(force_text(opts.verbose_name), escape(object_id)))
+            raise Http404('{} object with primary key {} does not exist.'.format(force_str(opts.verbose_name), escape(object_id)))
 
         # Define a set of videos to pass into the view on load.
         context = {
@@ -146,7 +146,7 @@ class CameraAdmin(DetailAdmin):
             raise PermissionDenied
 
         if obj is None:
-            raise Http404('{} object with primary key {} does not exist.'.format(force_text(opts.verbose_name), escape(object_id)))
+            raise Http404('{} object with primary key {} does not exist.'.format(force_str(opts.verbose_name), escape(object_id)))
 
         # Return a paginated list of videos.
         video_qs = obj.video_set.all()
@@ -338,7 +338,7 @@ class VideoAdmin(DetailAdmin):
         #    raise PermissionDenied
 
         if obj is None:
-            raise Http404('{} object with primary key {} does not exist.'.format(force_text(opts.verbose_name), escape(object_id)))
+            raise Http404('{} object with primary key {} does not exist.'.format(force_str(opts.verbose_name), escape(object_id)))
 
         observations = obj.penguinobservation_set.filter(observer=request.user).order_by("position")
 

@@ -11,8 +11,8 @@ from django.forms import ValidationError
 from django.conf import settings
 from django.utils import timezone
 from django import forms
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
+from six import python_2_unicode_compatible
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 
 #from observations.utils import civil_twilight
@@ -71,7 +71,7 @@ class Camera(models.Model):
     """
     name = models.CharField(max_length=100)
     camera_key = models.CharField(max_length=100, default="")  # Used to match camera to video recordings.
-    site = models.ForeignKey(Site, blank=True, null=True)
+    site = models.ForeignKey(Site, blank=True, null=True,on_delete=models.CASCADE)
     location = models.PointField(srid=4326, blank=True, null=True)
     active = models.BooleanField(default=True)
 
@@ -93,7 +93,7 @@ class PenguinCount(models.Model):
     """Represents an aggregation of penguin observations for a given date and site.
     TODO: Deprecate this model.
     """
-    site = models.ForeignKey(Site)
+    site = models.ForeignKey(Site,on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
     comments = models.TextField(null=True, blank=True)
     civil_twilight = models.DateTimeField(null=True, blank=True)
@@ -144,7 +144,7 @@ class Video(models.Model):
     penguins will be counted. Normally videos are one hour duration.
     """
     date = models.DateField(help_text="The date of the recording.")
-    camera = models.ForeignKey(Camera)
+    camera = models.ForeignKey(Camera,on_delete=models.CASCADE)
     file = models.FileField(upload_to="videos")
     start_time = models.TimeField(help_text="The start time of the recording.")
     end_time = models.TimeField(help_text="The end time of the recording (usually 1h after start).")
@@ -190,9 +190,9 @@ class PenguinObservation(models.Model):
     More than one observation of the same penguins on the same video may exist, if >1 person
     watches the video and records an observation.
     """
-    video = models.ForeignKey(Video)
+    video = models.ForeignKey(Video,on_delete=models.CASCADE)
     date = models.DateTimeField(help_text="The date on which the observation is noted")  # TODO: remove this field (use Video.date).
-    observer = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="observations")
+    observer = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="observations",on_delete=models.CASCADE)
     position = models.FloatField(
         default=0, null=True, verbose_name="Position (s)", help_text="Position in video (seconds from start)",
     )
