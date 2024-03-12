@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 
 from .admin import (
     #SiteAdmin,
@@ -15,31 +16,31 @@ from .models import (
     #PenguinCount,
     PenguinObservation,
     Video,
-    PenguinUser,
+    UserHelper
 )
 
 
-class PenguinUserChangeForm(forms.ModelForm):
+class UserChangeForm(forms.ModelForm):
 
     class Meta:
-        model = PenguinUser
+        model = User
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        super(PenguinUserChangeForm, self).__init__(*args, **kwargs)
+        super(UserChangeForm, self).__init__(*args, **kwargs)
         f = self.fields.get('user_permissions', None)
         if f is not None:
             f.queryset = f.queryset.select_related('content_type')
 
 
-class PenguinUserAdmin(UserAdmin):
+class UserAdmin(UserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'last_login')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
         ('Permissions', {'fields': ('is_active', 'is_superuser', 'is_staff', 'groups')}),
     )
-    form = PenguinUserChangeForm
+    form = UserChangeForm
     list_display = (
         'email',
         'first_name',
@@ -58,10 +59,31 @@ class PenguinUserAdmin(UserAdmin):
     def changelist_view(self, request, extra_context=None):
         context = {}
         context.update(extra_context or {})
-        return super(PenguinUserAdmin, self).changelist_view(request, context)
+        return super(UserAdmin, self).changelist_view(request, context)
 
     def response_add(self, request, obj, post_url_continue=None):
-        return super(PenguinUserAdmin, self).response_add(request, obj, post_url_continue)
+        return super(UserAdmin, self).response_add(request, obj, post_url_continue)
+
+    def completion_hours(self,obj):
+        if not obj  :
+            return "-"
+        else:
+            return UserHelper.completion_hours(obj)
+    completion_hours.short_description = "Completion Hours"
+
+    def completion_count(self,obj):
+        if not obj  :
+            return "-"
+        else:
+            return UserHelper.completion_count(obj)
+    completion_count.short_description = "Completion Count"
+
+    def observation_count(self,obj):
+        if not obj  :
+            return "-"
+        else:
+            return UserHelper.observation_count(obj)
+    observation_count.short_description = "Observation Count"
 
 
 class PenguinSite(AdminSite):
@@ -82,6 +104,6 @@ site = PenguinSite()
 site.register(Camera, CameraAdmin)
 site.register(Video, VideoAdmin)
 site.register(PenguinObservation, PenguinObservationAdmin)
-site.register(PenguinUser, PenguinUserAdmin)
+site.register(User, UserAdmin)
 #site.register(Site, SiteAdmin)
 #site.register(PenguinCount, PenguinCountAdmin)

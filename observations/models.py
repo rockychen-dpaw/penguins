@@ -4,6 +4,7 @@ from datetime import datetime, date, timedelta
 from datetimewidget.widgets import DateWidget
 from django.contrib.gis.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
 #from django.db.models.signals import post_save, pre_delete
 #from django.dispatch import receiver
 from django.forms import ValidationError
@@ -13,35 +14,33 @@ from django.utils import timezone
 from django import forms
 from six import python_2_unicode_compatible
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import AbstractUser
 
 #from observations.utils import civil_twilight
 
 
-class PenguinUser(AbstractUser):
-    """Override the stock Django User model, because we didn't know better at the time.
-    """
-    class Meta:
-        db_table = 'auth_user'  # Leave it alone!
-        managed = False
+class UserHelper(object):
 
-    @property
-    def completion_count(self):
-        return self.videos_seen.count()
+    @staticmethod
+    def completion_count(user):
+        return user.videos_seen.count()
 
-    @property
-    def observation_count(self):
-        return self.observations.count()
+    @staticmethod
+    def observation_count(user):
+        return user.observations.count()
 
-    @property
-    def completion_hours(self):
+    @staticmethod
+    def completion_hours(user):
         t = timedelta()
-        for i in self.videos_seen.all():
+        for i in user.videos_seen.all():
             t += i.duration
         return t
 
-    def is_observer(self):
-        return 'Observers' in self.groups.values_list('name', flat=True)
+    @staticmethod
+    def is_observer(user):
+        try:
+            return 'Observers' in user.groups.values_list('name', flat=True)
+        except:
+            return False
 
 
 @python_2_unicode_compatible
@@ -151,7 +150,7 @@ class Video(models.Model):
     views = models.PositiveSmallIntegerField(default=0)
     mark_complete = models.BooleanField(default=False, help_text="Has this been viewed in its entirety by a reviewer?")
     completed_by = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="videos_seen", verbose_name="Users who have seen this video")
+        User, related_name="videos_seen", verbose_name="Users who have seen this video")
 
     class Meta:
         ordering = ["-date", "-start_time"]

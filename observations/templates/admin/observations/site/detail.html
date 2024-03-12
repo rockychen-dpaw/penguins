@@ -6,7 +6,7 @@
 {{ media }}
 {% endblock %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />{% endblock %}
 
 {% block coltype %}colM{% endblock %}
 
@@ -14,17 +14,13 @@
 
 {% if not is_popup %}
 {% block breadcrumbs %}
-<ol class="breadcrumb">
-  <li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
-  <li>{% if has_change_permission %}<a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}</li>
-  <li>{{ original|truncatewords:"18" }}</li>
-</ol>
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+  &rsaquo; {% if has_change_permission %}<a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}
+  &rsaquo; {{ original|truncatewords:"18" }}
+</div>
 {% endblock %}
 {% endif %}
-
-{% block navbar %}
-{% include 'admin/navbar.html' %}
-{% endblock navbar %}
 
 {% block content %}
 {% block object-tools %}

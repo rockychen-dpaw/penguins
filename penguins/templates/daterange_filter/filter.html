@@ -1,0 +1,23 @@
+{% load i18n %}
+<h3>{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</h3>
+{{ spec.form.media }}
+<style>
+	.calendarbox {
+		margin-left: -200px;
+		z-index: 1000;
+	}
+	.daterange_form input {
+		width: 100%;
+	}
+        #changelist-filter .daterange_form a {
+            display:inline-block;
+        }
+
+</style>
+<form class='daterange_form' method="GET" action="">
+	{{ spec.form.as_p }}
+	<p>
+	<input type="submit" value="{% trans "Search" %}">
+	<input type="reset" value="{% trans "Clear" %}">
+	</p>
+</form>

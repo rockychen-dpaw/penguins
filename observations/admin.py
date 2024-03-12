@@ -19,7 +19,7 @@ from functools import update_wrapper
 from leaflet.admin import LeafletGeoAdmin
 import unicodecsv
 
-from .models import Video
+from .models import Video,UserHelper
 
 
 class DetailChangeList(ChangeList):
@@ -56,10 +56,10 @@ class DetailAdmin(ModelAdmin):
         urlpatterns = [
             path('', wrap(self.changelist_view), name='%s_%s_changelist' % info),
             path('add/', wrap(self.add_view), name='%s_%s_add' % info),
-            path('<path:object_id>/history/', wrap(self.history_view), name='%s_%s_history' % info),
-            path('<path:object_id>/delete/', wrap(self.delete_view), name='%s_%s_delete' % info),
-            path('<path:object_id>/change/', wrap(self.change_view), name='%s_%s_change' % info),
-            path('<path:object_id>/', wrap(self.detail_view), name='%s_%s_detail' % info),
+            path('<str:object_id>/history/', wrap(self.history_view), name='%s_%s_history' % info),
+            path('<str:object_id>/delete/', wrap(self.delete_view), name='%s_%s_delete' % info),
+            path('<str:object_id>/change/', wrap(self.change_view), name='%s_%s_change' % info),
+            path('<str:object_id>/', wrap(self.detail_view), name='%s_%s_detail' % info),
         ]
         return urlpatterns
 
@@ -165,7 +165,7 @@ class CameraAdmin(DetailAdmin):
             'title': '{} camera'.format(obj.name),
             'videos': videos,
             'video_count': video_qs.count(),
-            'can_add_observations': request.user.is_observer() or request.user.is_superuser,
+            'can_add_observations': UserHelper.is_observer(request.user) or request.user.is_superuser,
         }
         context.update(extra_context or {})
         return super(CameraAdmin, self).detail_view(request, object_id, context)
@@ -334,7 +334,7 @@ class VideoAdmin(DetailAdmin):
         obj.save()
 
         # If the user is neither a superuser nor part of the Observer group, disallow usage.
-        #if not request.user.is_superuser and not request.user.is_observer():
+        #if not request.user.is_superuser and not UserHelper.is_observer(request.user):
         #    raise PermissionDenied
 
         if obj is None:

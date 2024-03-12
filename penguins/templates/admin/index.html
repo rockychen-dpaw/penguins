@@ -1,12 +1,20 @@
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/dashboard.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet.css' %}" />
 {{ gform.media }}
-{% endblock %}
 
-{% block extrajs %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha512-bnIvzh6FU75ZKxp0GXLH9bewza/OIw6dLVh9ICg0gogclmYGguQJWl8U30WpbsGTqbIiAwxTsbe76DErLq5EDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+.dashboard #content {
+   width:100%;
+   padding:0px;
+   margin:0px;
+}
+</style>
 <script type="text/javascript" src="{% static 'leaflet/leaflet.js' %}"></script>
     <script>
     $(function() {
@@ -59,10 +67,7 @@
 
 {% block bodyclass %}dashboard{% endblock %}
 
-{% block breadcrumbs %}
-<ol class="breadcrumb">
-  <li>Home</li>
-</ol>
+{% block nav-breadcrumbs %}
 {% endblock %}
 
 {% block navbar %}
@@ -72,20 +77,22 @@
 {% block content_title %}{% endblock %}
 
 {% block content %}
-<div class="row">
-  <div class="col-xs-12 col-md-6">
-    <h3>Penguin island cameras (active)</h3>
-    <div class="list-group">
-      {% for camera in cameras %}
-      <a class="list-group-item" href="{% url 'admin:observations_camera_detail' camera.pk %}">{{ camera }} - {{ camera.video_set.count }} videos, latest {{ camera.get_newest_video.get_start_datetime }}</a>
-      {% endfor %}
-    </div>
-  </div>
-
-  <div class="col-xs-12 col-md-6">
-    <h3>Site map</h3>
-    <div id="map" style="height:400px;"></div>
-  </div>
-
-</div>
+<table style="width:100%">
+  <tr>
+    <td style="width:50%;margin:40px;">
+        <h3>Penguin island cameras (active)</h3>
+        <table style="width:100%">
+          {% for camera in cameras %}
+          <tr><td>
+          <a class="list-group-item" href="{% url 'admin:observations_camera_detail' camera.pk %}">{{ camera }} - {{ camera.video_set.count }} videos, latest {{ camera.get_newest_video.get_start_datetime }}</a>
+          </td></tr>
+          {% endfor %}
+        </table>
+    </td>
+    <td style="margin:40px;">
+       <h3>Site map</h3>
+       <div id="map" style="height:400px;width:100%"></div>
+  </td>
+  </tr>
+</table>
 {% endblock %}

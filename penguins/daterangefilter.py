@@ -11,7 +11,7 @@ from django import forms
 from django.contrib import admin
 from django.db import models
 from django.utils.translation import gettext as _
-from django.templatetags import static
+from django.templatetags.static import static
 from django.conf import settings
 
 use_suit = 'DATE_RANGE_FILTER_USE_WIDGET_SUIT'
@@ -70,7 +70,7 @@ class DateRangeFilterBaseForm(forms.Form):
             setattr(self.request, 'daterange_filter_media_included', True)
 
             js = ["calendar.js", "admin/DateTimeShortcuts.js"]
-            css = ['widgets.css']
+            css = ['widgets.css',]
 
             return forms.Media(
                 js=[static("admin/js/%s" % path) for path in js],

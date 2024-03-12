@@ -5,9 +5,10 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 
 from penguins.utils import ListResourceView, DetailUpdateResourceView
-from .models import PenguinUser, PenguinObservation, Video
+from .models import  PenguinObservation, Video
 
 
 def penguinsobservation_serializer(obj):
@@ -41,7 +42,7 @@ class PenguinObservationListResource(LoginRequiredMixin, ListResourceView):
             new_obs = PenguinObservation(
                 date=arrow.get(data['date']).datetime,
                 video=Video.objects.get(pk=data['video']),
-                observer=PenguinUser.objects.get(pk=data['observer']),
+                observer=User.objects.get(pk=data['observer']),
                 seen=data['seen'],
                 position=data['position'],
                 comments=data['comments'] if data['comments'] else None,

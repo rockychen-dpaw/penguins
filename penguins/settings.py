@@ -5,7 +5,11 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = os.environ.get('SECRET_KEY', 'PlaceholderSecretKey')
 DEBUG = True if os.environ.get('DEBUG', False) == 'True' else False
-CSRF_COOKIE_SECURE = True if os.environ.get('CSRF_COOKIE_SECURE', False) == 'True' else False
+
+_samesite_options = {"none":"None","lax":"Lax","strict":"Strict","null":None}
+def _get_samesite(v):
+    return _samesite_options.get(v.lower() if v else None,"Lax")
+
 SESSION_COOKIE_SECURE = True if os.environ.get('SESSION_COOKIE_SECURE', False) == 'True' else False
 if not DEBUG:
     ALLOWED_HOSTS = os.environ.get('ALLOWED_DOMAINS', 'localhost').split(',')
@@ -14,6 +18,18 @@ else:
 INTERNAL_IPS = ('127.0.0.1', '::1')
 ROOT_URLCONF = 'penguins.urls'
 WSGI_APPLICATION = 'penguins.wsgi.application'
+
+CSRF_COOKIE_SECURE = True if os.environ.get('CSRF_COOKIE_SECURE', False) == 'True' else False
+CSRF_COOKIE_HTTPONLY = True if os.environ.get('CSRF_COOKIE_HTTPONLY', False) == 'True' else False
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS") 
+if CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS = [d.strip() for d in CSRF_TRUSTED_ORIGINS if d.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = ["https://{}".format("*.au" if h == '*' else ("*{}".format(h) if h.startswith('.') else h)) for h in ALLOWED_HOSTS]
+CSRF_COOKIE_SAMESITE = os.environ.get("CSRF_COOKIE_SAMESITE","Lax") 
+CSRF_COOKIE_SAMESITE = _get_samesite(CSRF_COOKIE_SAMESITE)
+
+DEFAULT_AUTO_FIELD="django.db.models.AutoField"
 
 # Email settings
 ADMINS = ('asi@dbca.wa.gov.au',)
@@ -49,7 +65,6 @@ MIDDLEWARE = [
 ]
 
 
-AUTH_USER_MODEL = 'observations.PenguinUser'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL_FAILURE = LOGIN_URL

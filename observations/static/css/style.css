@@ -139,31 +139,6 @@ h1#site-logo {
 .masthead > .row-fluid {
     padding-top: 15px;
 }
-.navbar .nav > .active > a, .navbar .nav > li > a:hover, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus, .navbar .nav > .active > a:visited, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open > a:hover > .dropdown-toggle, .navbar .nav li.dropdown.open a:hover, .navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle, .dropdown-menu > .active > a:hover {
-    background: none repeat scroll 0 0 #005590;
-    box-shadow: none;
-    color: #FFFFFF;
-    text-shadow: none;
-}
-.navbar-fixed-top > .navbar-inner a.top-header-active {
-    background-color: #CCCCCC;
-    box-shadow: none;
-    color: #000000;
-    text-shadow: none;
-}
-div.navbar-fixed-bottom {
-    height: 36px;
-}
-#mainnav .navbar-inner {
-    background: none repeat scroll 0 0 #3580CA;
-    color: #FFFFFF;
-    filter: none;
-    margin-bottom: 0;
-}
-#mainnav .navbar .nav > li > a {
-    color: #FFFFFF;
-    text-shadow: 0 1px 0 #777777;
-}
 .form-search, .topsearch form {
     margin: 0;
     padding: 5px 0 0;
@@ -216,5 +191,21 @@ textarea.parsley-error {
 #video {
     margin: 50px auto;
     max-width: 982px;
+}
+
+#topmenu {
+    padding:15px;
+    background-color: #3580ca;
+}
+#topmenu a {
+    color:white;
+    padding:15px;
+    
+}
+#topmenu a:hover {
+    background-color:#034c8b;
+}
+table.table-striped {
+    width: 100%;
 }
 

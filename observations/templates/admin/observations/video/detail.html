@@ -3,15 +3,22 @@
 
 {% block extrahead %}{{ block.super }}
 {{ media }}
-<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
 {% endblock %}
 
 {% block extrastyle %}
 {{ block.super }}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
-<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-datetimepicker.min.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-datetimepicker.min.css' %}" />
 <link rel="stylesheet" href="//cdn.jsdelivr.net/flowplayer/5.4.3/skin/minimalist.css">
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-theme.min.css' %}" />
+<style>
+  pre {
+     background-color:transparent;
+     border:none;
+  }
+</style>
 {% endblock %}
 
 {% block coltype %}colM{% endblock %}
@@ -20,18 +27,14 @@
 
 {% if not is_popup %}
 {% block breadcrumbs %}
-<ol class="breadcrumb">
-  <li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
-  <li>{% if has_change_permission %}<a href="{% url 'admin:observations_camera_changelist' %}">Cameras</a>{% else %}Camera{% endif %}</li>
-  <li><a href="{% url 'admin:observations_camera_detail' original.camera.id %}">{{ original.camera.name }}</a></li>
-  <li>Video {{ original.date|date:"d-m-Y" }} {{ original.start_time|time:"H:i" }}-{{ original.end_time|time:"H:i" }}</li>
-</ol>
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+  &rsaquo; {% if has_change_permission %}<a href="{% url 'admin:observations_camera_changelist' %}">Cameras</a>{% else %}Camera{% endif %}
+  &rsaquo; <a href="{% url 'admin:observations_camera_detail' original.camera.id %}">{{ original.camera.name }}</a>
+  &rsaquo; Video {{ original.date|date:"d-m-Y" }} {{ original.start_time|time:"H:i" }}-{{ original.end_time|time:"H:i" }}
+</div>
 {% endblock %}
 {% endif %}
-
-{% block navbar %}
-{% include 'admin/navbar.html' %}
-{% endblock navbar %}
 
 {% block content %}
 <div class="alert alert-info">
@@ -44,7 +47,7 @@
         Hold the mouse over the window and press <strong>?</strong> to get help. Press HELP on the menu above to recieve more general instructions.
     </div>
     <div data-embed="false" class="flowplayer is-splash color-alt no-background no-volume no-mute" style="width:982px;height:552px;">
-        <video preload poster>
+        <video preload>
             <source src="{{ original.file.url }}">
         </video>
     </div>
@@ -70,8 +73,8 @@
   <div class="col-xs-6 col-md-6 object-tools">
     <span class="pull-right">
       <button id ="markdone" type="button" class="btn btn-success" role="button" style="display:none" onClick="markDone({{ original.pk }})"><span class="glyphicon glyphicon-thumbs-up"></span> Mark Finished</button>
-      <a class="btn btn-primary" href="{{ original.file.url }}"><span class="glyphicon glyphicon-facetime-video"></span> Download Video</a>
-      <button type="button" class="btn btn-primary" role="button" data-target="#addform" data-toggle="modal" onClick="formFillin();"><span class="glyphicon glyphicon-plus"></span> Add observation</button>
+      <button class="btn btn-primary" onclick="document.location.href='{{ original.file.url }}'"><span class="glyphicon glyphicon-facetime-video"></span> Download Video</a>
+      <button type="button" class="btn btn-primary" style="margin-left:10px" role="button" data-target="#addform" data-toggle="modal" onClick="formFillin();"><span class="glyphicon glyphicon-plus"></span> Add observation</button>
     </span>
   </div>
 </div>
@@ -122,7 +125,7 @@
             <label for="id_seen" class="col-sm-2 control-label required">Penguins seen</label>
             <div class="col-sm-10">
               <div class="input-group">
-                <input type="text" class="form-control" id="id_seen" min="1" max="100" required  autocomplete="off">
+                <input type="number" class="form-control" id="id_seen" min="1" max="100" required  autocomplete="off">
                 <span class="input-group-addon glyphicon glyphicon-eye-open"></span>
               </div>
             </div>
@@ -156,6 +159,9 @@
 {% endblock %}
 
 {% block extrajs %}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha512-bnIvzh6FU75ZKxp0GXLH9bewza/OIw6dLVh9ICg0gogclmYGguQJWl8U30WpbsGTqbIiAwxTsbe76DErLq5EDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/jquery.cookie.js' %}"></script>
 <script src="{% static 'js/moment.min.js' %}"></script>
 <script src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
